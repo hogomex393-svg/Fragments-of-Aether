@@ -54,6 +54,7 @@
     body.awaiting-start .intro::before,
     body.awaiting-start .intro-title,
     body.awaiting-start .stage,
+    body.awaiting-start .scene-fallback,
     body.awaiting-start .scene {
       animation-play-state: paused;
     }
@@ -121,11 +122,30 @@
       height: 100%;
       object-fit: cover;
       object-position: center center;
+      opacity: 0;
+      transform: scale(1.02);
+      transform-origin: 50% 50%;
+      filter: saturate(1.08) contrast(1.06) brightness(0.92);
+      animation: slowApproach var(--approach-duration) cubic-bezier(0.16, 0.74, 0.24, 1) forwards;
+      transition: opacity 0.45s ease;
+      will-change: transform;
+    }
+
+    .scene-fallback {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #050604 url("temple_bg.jpg") center center / cover no-repeat;
       transform: scale(1.02);
       transform-origin: 50% 50%;
       filter: saturate(1.08) contrast(1.06) brightness(0.92);
       animation: slowApproach var(--approach-duration) cubic-bezier(0.16, 0.74, 0.24, 1) forwards;
       will-change: transform;
+    }
+
+    body.scene-ready .scene {
+      opacity: 1;
     }
 
     body.preview .scene {
@@ -1176,6 +1196,7 @@
     </h1>
   </div>
   <main class="stage" aria-label="Level 1 cinematic background">
+    <div class="scene-fallback" aria-hidden="true"></div>
     <video class="scene" muted playsinline preload="auto" poster="temple_bg.jpg">
       <source src="Level1_20260606_01224452.mp4" type="video/mp4">
     </video>
@@ -1287,6 +1308,8 @@
     let audioUnlocked = false;
     let currentAfter = "diamond-demo";
     let currentDemoEnd = 60;
+    let sceneStartTimer = null;
+    let triggerFallbackTimer = null;
     const trialTransitionDelay = 1150;
     const demoStartTime = 50;
     const demoPlaybackRate = 1.45;
@@ -1334,7 +1357,11 @@
       unlockAudio();
       soundGate.classList.add("is-hidden");
       document.body.classList.remove("awaiting-start");
+      video.load();
       playFromStart(logoAudio);
+
+      window.clearTimeout(sceneStartTimer);
+      sceneStartTimer = window.setTimeout(startScene, isPreview ? 800 : 6700);
     };
 
     enterTemple.addEventListener("click", beginExperience);
@@ -1367,9 +1394,24 @@
 
       started = true;
       video.currentTime = 0;
-      video.play().catch(() => {});
+      video.play().catch(() => {
+        document.body.classList.remove("scene-ready");
+      });
       playFromStart(templeAudio);
+
+      window.clearTimeout(triggerFallbackTimer);
+      triggerFallbackTimer = window.setTimeout(showTrigger, isPreview ? 6500 : 22500);
     };
+
+    video.addEventListener("playing", () => {
+      document.body.classList.add("scene-ready");
+    });
+
+    video.addEventListener("canplay", () => {
+      if (started) {
+        document.body.classList.add("scene-ready");
+      }
+    });
 
     video.addEventListener("loadedmetadata", () => {
       if (!isPreview && Number.isFinite(video.duration) && video.duration > 0) {
@@ -1381,12 +1423,9 @@
 
     video.addEventListener("ended", () => {
       video.pause();
+      window.clearTimeout(triggerFallbackTimer);
       showTrigger();
     });
-
-    if (isPreview) {
-      window.setTimeout(showTrigger, 6500);
-    }
 
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden && started) {
