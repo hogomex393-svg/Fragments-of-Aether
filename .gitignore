@@ -1,0 +1,17 @@
+# Unreal generated directories
+.vs/
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# IDE and user-specific files
+*.suo
+*.user
+*.userosscache
+*.VC.db
+*.opendb
+
+# Local logs and temporary files
+*.log
+*.tmp
