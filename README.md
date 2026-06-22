@@ -6,9 +6,15 @@ This repository contains the Unreal Engine project files for **Fragments of Aeth
 
 Click the preview below to watch the full gameplay video on YouTube:
 
-[![Watch the Fragments of Aether gameplay video](https://img.youtube.com/vi/Kn94gKbtgG0/hqdefault.jpg)](https://www.youtube.com/watch?v=Kn94gKbtgG0)
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=Kn94gKbtgG0">
+    <img src="https://img.youtube.com/vi/Kn94gKbtgG0/maxresdefault.jpg" alt="Watch the Fragments of Aether gameplay video" width="720">
+  </a>
+</p>
 
-[Watch the full gameplay video](https://www.youtube.com/watch?v=Kn94gKbtgG0)
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=Kn94gKbtgG0"><strong>Watch the full gameplay video on YouTube</strong></a>
+</p>
 
 ## Promotional Website
 
